@@ -16,7 +16,7 @@ body {
 }
 
 .App {
-  width: 90%;
+  width: 100%;
   max-width: 800px; /* Aumentado de 600px a 800px */
   background-color: #ffffff;
   border-radius: 8px;
