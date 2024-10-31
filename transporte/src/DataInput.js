@@ -14,37 +14,35 @@ function DataInput() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const lines = data.trim().split('\n');
-    // fila de demanda 
-    const demand = lines.pop().split(',').map(Number);
+    try {
+      const parsedData = JSON.parse(data.trim());
 
-    // oferta y matriz de costos
-    const costMatrix = [];
-    const supply = [];
+      if (!Array.isArray(parsedData) || !parsedData.every(Array.isArray)) {
+        throw new Error("Los datos deben ser una lista de listas.");
+      }
 
-    lines.forEach(line => {
-      const values = line.split(',').map(Number);
-      const offerValue = values.pop(); // La penúltima columna es la oferta
-      supply.push(offerValue); 
-      costMatrix.push(values);   
-    });
+      const costMatrix = parsedData.slice(0, -1); 
+      const supply = costMatrix.map(row => row.pop()); 
+      const demand = parsedData[parsedData.length - 1]; 
 
-    // Calcula el total de la oferta
-    const totalSupply = supply.reduce((acc, val) => acc + val, 0);
+      const totalSupply = supply.reduce((acc, val) => acc + val, 0);
 
-    // Navega a la siguiente pantalla con los datos procesados, incluyendo el total de la oferta
-    navigate('/next', {
-      state: {
-        supply: [...supply, totalSupply], 
-        demand,
-        costMatrix,
-        algoritmo,
-        degradado,
-        desbalanceado,
-        maximizado,
-        rutasProhibidas,
-      },
-    });
+      navigate('/next', {
+        state: {
+          supply: [...supply, totalSupply],
+          demand,
+          costMatrix,
+          algoritmo,
+          degradado,
+          desbalanceado,
+          maximizado,
+          rutasProhibidas,
+        },
+      });
+    } catch (error) {
+      console.error("Error al procesar los datos:", error);
+      alert("Error en el formato de los datos. Asegúrate de ingresar una lista de listas válida.");
+    }
   };
 
   return (
@@ -57,9 +55,9 @@ function DataInput() {
             <textarea
               value={data}
               onChange={handleDataChange}
-              placeholder=" 1, 7, 3, 6, 3
-                          6, 8, 3, 5, 4
-                          3, 7, 2, 6"
+              placeholder='[[1, 7, 3, 6], 
+                            [6, 8, 3, 5], 
+                            [3, 7, 2, 6]]'
               rows="5"
             />
           </label>
