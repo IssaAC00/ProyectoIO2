@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
+import { esquinaNoroeste } from './Algoritmos/EsquinasNorOeste';
 import './NextScreen.css';
 
 function NextScreen() {
@@ -7,6 +8,14 @@ function NextScreen() {
   const { supply, demand, costMatrix } = location.state || {};
 
   console.log('Datos recibidos:', { supply, demand, costMatrix }); // Verifica los datos recibidos
+
+  // como tienen que entrar al algoritmo 
+  const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
+  expandedMatrix.push([...demand, 0]);
+
+  
+
+ esquinaNoroeste(expandedMatrix);
 
   return (
     <div className="App">

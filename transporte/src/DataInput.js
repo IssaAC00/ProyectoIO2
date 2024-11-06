@@ -57,7 +57,7 @@ function DataInput() {
               onChange={handleDataChange}
               placeholder='[[1, 7, 3, 6], 
                             [6, 8, 3, 5], 
-                            [3, 7, 2, 6]]'
+                            [3, 7, 2]]'
               rows="5"
             />
           </label>
