@@ -20,6 +20,8 @@ function NextScreen() {
   const combinar = combinarMatrices( expandedMatrix , Noroestee);
   console.table(combinar);
 
+  
+
   return (
     <div className="App">
       <h1>Datos Capturados</h1>
