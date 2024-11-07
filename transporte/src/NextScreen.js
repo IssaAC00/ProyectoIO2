@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { esquinaNoroeste, combinarMatrices } from './Algorithms/EsquinasNorOeste.js'
+import { costoMinimo } from './Algorithms/CostoMinimo.js';
 import './NextScreen.css';
 
 function NextScreen() {
@@ -16,11 +17,12 @@ function NextScreen() {
   expandedMatrix.push([...demand, 0]);
   console.log(expandedMatrix);
 
-  const Noroestee = esquinaNoroeste(supply, demand);
-  const combinar = combinarMatrices( expandedMatrix , Noroestee);
+ // const Noroestee = esquinaNoroeste(supply, demand);
+  const costoMin = costoMinimo(costMatrix, supply, demand);
+  const combinar = combinarMatrices( expandedMatrix , costoMin);
   console.table(combinar);
 
-  
+
 
   return (
     <div className="App">
