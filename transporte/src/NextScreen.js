@@ -2,6 +2,7 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { esquinaNoroeste, combinarMatrices } from './Algorithms/EsquinasNorOeste.js'
 import { costoMinimo, combinarMatricesMinimo } from './Algorithms/CostoMinimo.js';
+import { metodoVogel } from './Algorithms/Vogel.js';
 import './NextScreen.css';
 
 function NextScreen() {
@@ -12,15 +13,16 @@ function NextScreen() {
 
 
 
- 
+
   const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
   expandedMatrix.push([...demand, 0]);
   console.log(expandedMatrix);
 
- // const Noroestee = esquinaNoroeste(supply, demand);
-  const costoMin = costoMinimo(costMatrix, supply, demand);
- // const combinar = combinarMatrices( expandedMatrix , costoMin);
-  const combinar = combinarMatricesMinimo( expandedMatrix , costoMin);
+  // const Noroestee = esquinaNoroeste(supply, demand);
+  // const costoMin = costoMinimo(costMatrix, supply, demand);
+  const Vogel = metodoVogel(costMatrix, supply, demand);
+  // const combinar = combinarMatrices( expandedMatrix , costoMin);
+  const combinar = combinarMatricesMinimo(expandedMatrix, Vogel);
   console.table(combinar);
 
 
@@ -28,7 +30,7 @@ function NextScreen() {
   return (
     <div className="App">
       <h1>Datos Capturados</h1>
-      
+
       {costMatrix && supply && demand ? (
         <table className="data-table">
           <thead>

@@ -86,7 +86,7 @@ export function combinarMatricesMinimo(matriz1, matriz2) {
             if (valor2 !== 0) {
                 filaResultado.push(`${valor1}(${valor2})`);
             } else {
-                filaResultado.push(`${valor1} x `);
+                filaResultado.push(`${valor1} `);
             }
         }
         resultado.push(filaResultado);
