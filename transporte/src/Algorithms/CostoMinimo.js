@@ -18,12 +18,23 @@ export function costoMinimo(costos, oferta, demanda) {
             return;
         }
 
-        for (let i = 0; i < ofertaRestante.length; i++) {
+        for (let i = 0; i < ofertaRestante.length-1; i++) {
             for (let j = 0; j < demandaRestante.length; j++) {
+/*                 console.log(`ofertaRestante[i]: ${ofertaRestante[i]}
+                     demandarestante:  ${demandaRestante[j]} 
+                     cual es mi I: ${i},
+                     cual es mi J ${j},
+                     costo:${costos[i][j] } 
+                     minimo costo ${minCosto}`
+                ); */
                 if (ofertaRestante[i] > 0 && demandaRestante[j] > 0 && costos[i][j] < minCosto) {
                     minCosto = costos[i][j];
                     minI = i;
                     minJ = j;
+/*                     console.log(` minI ${i}
+                        minJ:  ${j} 
+                        minimo costo ${minCosto}`
+                   ); */
                 }
             }
         }
@@ -47,7 +58,7 @@ export function costoMinimo(costos, oferta, demanda) {
             }
         }
         if (demandaRestante[minJ] === 0) {
-            for (let i = 0; i < ofertaRestante.length; i++) {
+            for (let i = 0; i < ofertaRestante.length - 1; i++) {
                 costos[i][minJ] = Infinity;
             }
         }
@@ -59,4 +70,27 @@ export function costoMinimo(costos, oferta, demanda) {
     console.log("Matriz de solución final:", solucion);
 
     return solucion;
+}
+
+
+export function combinarMatricesMinimo(matriz1, matriz2) {
+    const resultado = [];
+
+    for (let i = 0; i < matriz1.length; i++) {
+        const filaResultado = [];
+        for (let j = 0; j < matriz1[i].length; j++) {
+            const valor1 = matriz1[i][j];
+            const valor2 = matriz2[i][j] || 0; 
+
+           
+            if (valor2 !== 0) {
+                filaResultado.push(`${valor1}(${valor2})`);
+            } else {
+                filaResultado.push(`${valor1} x `);
+            }
+        }
+        resultado.push(filaResultado);
+    }
+
+    return resultado;
 }
