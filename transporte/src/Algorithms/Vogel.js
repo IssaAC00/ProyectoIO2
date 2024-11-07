@@ -6,23 +6,25 @@ function calcularPenalizacion(costos, indicesValidos) {
         const filaOColumna = costos[index];
         console.log(`estos son los indices validos ${indicesValidos}`);
         console.log(`fila index: ${index}`);
-        console.log(`fila columna: ${filaOColumna}`)
+        console.log(`fila columna: ${filaOColumna}`);
         const costosValidos = filaOColumna.filter(c => c !== Infinity);
         if (costosValidos.length < 2) return 0;
         costosValidos.sort((a, b) => a - b);
         return costosValidos[1] - costosValidos[0];
     });
+
 }
+
+
 
 export function metodoVogel(costos, oferta, demanda) {
     const solucion = Array.from({ length: oferta.length }, () => Array(demanda.length + 1).fill(0));
     const iteraciones = [];
 
-
     let ofertaRestante = [...oferta];
     console.log(`oferta restante transferancia ${ofertaRestante}`);
     let demandaRestante = [...demanda];
-    console.log(`oferta restante transferancia ${demandaRestante}`);
+    console.log(`demanda restante transferancia ${demandaRestante}`);
 
     while (true) {
         console.log(`antes de la penalizacion`);
@@ -35,10 +37,10 @@ export function metodoVogel(costos, oferta, demanda) {
         );
         console.log(`penalizacion columnas: ${penalizacionColumnas}`);
 
-       /*  const maxPenalizacionFila = Math.max(...penalizacionFilas);
+        const maxPenalizacionFila = Math.max(...penalizacionFilas);
         const maxPenalizacionColumna = Math.max(...penalizacionColumnas);
 
-        let i, j;
+    /*     let i, j;
         if (maxPenalizacionFila >= maxPenalizacionColumna) {
             i = penalizacionFilas.indexOf(maxPenalizacionFila);
             j = costos[i].indexOf(Math.min(...costos[i].filter(c => c !== Infinity)));
@@ -75,7 +77,7 @@ export function metodoVogel(costos, oferta, demanda) {
     iteraciones.forEach((iteracion, idx) => {
         console.log(`Iteración ${idx + 1}: ${iteracion}`);
     });
-    console.log("Matriz de solución final:", solucion); */
-    }
+    console.log("Matriz de solución final:", solucion);  */
+}
     return solucion;
 }
