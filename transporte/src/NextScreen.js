@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { esquinaNoroeste, combinarMatrices } from './Algorithms/EsquinasNorOeste.js'
 import { costoMinimo, combinarMatricesMinimo } from './Algorithms/CostoMinimo.js';
 import { metodoVogel } from './Algorithms/Vogel.js';
-import {  metodoMODI } from './Algorithms/Modi.js'
+import {  metodoMODI, Modi } from './Algorithms/Modi.js'
 import './NextScreen.css';
 
 function NextScreen() {
@@ -27,8 +27,8 @@ function NextScreen() {
   console.log(expandedMatrix);
   console.table(Noroestee);
   //const combinar = combinarMatricesMinimo(expandedMatrix, Vogel);
-  //const  metodoM = metodoMODI(combinar);
- // console.log(metodoM);
+  const  metodoM = Modi(costMatrix, demand, supply, Noroestee);
+  console.log(metodoM);
   
 
 
