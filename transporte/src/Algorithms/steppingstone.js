@@ -142,3 +142,26 @@ function calcularCostoTotal(costos, asignaciones) {
     }
     return total;
 }
+
+
+// Función para visualizar la matriz incluyendo la columna o fila ficticia
+export function visualizarMatriz(asignaciones, costos, oferta, demanda, esDesbalanceado) {
+    let matrizHTML = "<table border='1'><tr><th></th>";
+    demanda.forEach((d, idx) => matrizHTML += `<th>D${idx + 1}</th>`);
+    if (esDesbalanceado && oferta.length > costos.length) matrizHTML += `<th>Supply</th>`;
+    matrizHTML += "</tr>";
+
+    for (let i = 0; i < asignaciones.length; i++) {
+        matrizHTML += `<tr><td>S${i + 1}</td>`;
+        for (let j = 0; j < asignaciones[i].length; j++) {
+            matrizHTML += `<td>${costos[i][j]} (${asignaciones[i][j]})</td>`;
+        }
+        matrizHTML += `<td>${oferta[i]}</td></tr>`;
+    }
+
+    matrizHTML += "<tr><td>Demand</td>";
+    demanda.forEach(d => matrizHTML += `<td>${d}</td>`);
+    matrizHTML += "</tr></table>";
+
+    return matrizHTML;
+}

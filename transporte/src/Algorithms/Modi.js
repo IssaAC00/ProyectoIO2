@@ -72,7 +72,7 @@ export function Modi(costos, demanda, oferta, fase1) {
         // Ajustar la matriz de asignaciones usando el ciclo cerrado de la celda seleccionada
         ajustarCicloCerrado(asignaciones, minI, minJ);
         contador++ ;
-    } while (!esOptima && contador === 3); 
+    } while (!esOptima && contador === 5); 
 
     const valorZ = calcularCostoTotal(costos, asignaciones);
    
@@ -83,25 +83,35 @@ export function Modi(costos, demanda, oferta, fase1) {
 function ajustarCicloCerrado(asignaciones, i, j) {
     // Encontrar el ciclo cerrado desde la celda (i, j)
     const ciclo = encontrarCiclo(asignaciones, i, j);
-    console.log(ciclo);
+    console.log('Ciclo encontrado:', ciclo);
 
-    // Determinar el valor mínimo en las posiciones del ciclo que restan
+    // Determinar el valor mínimo en las posiciones impares del ciclo
     let minValor = Infinity;
+    for (let k = 1; k < ciclo.length; k += 2) {
+        const [fila, col] = ciclo[k];
+        minValor = Math.min(minValor, asignaciones[fila][col]);
+    }
+    console.log(`Valor mínimo en las posiciones impares del ciclo: ${minValor}`);
 
-    console.log(`ciclo ${minValor}`);
-    
     // Ajustar las asignaciones a lo largo del ciclo cerrado
     for (let k = 0; k < ciclo.length; k++) {
         const [fila, col] = ciclo[k];
-        console.log(`ciclo[k] ${ciclo[k]}`);
+        console.log(`Celda actual en ciclo [${fila}, ${col}]: Valor antes del ajuste: ${asignaciones[fila][col]}`);
+        
         if (k % 2 === 0) {
-            asignaciones[fila][col] += minValor; // Sumar en posiciones pares
+            // Sumar `minValor` en posiciones pares del ciclo
+            asignaciones[fila][col] += minValor;
         } else {
-            asignaciones[fila][col] -= minValor; // Restar en posiciones impares
+            // Restar `minValor` en posiciones impares del ciclo
+            asignaciones[fila][col] -= minValor;
         }
-        console.log(`asignaciones: ${asignaciones}`);
+
+        console.log(`Celda [${fila}, ${col}] después del ajuste: ${asignaciones[fila][col]}`);
     }
+
+    console.log('Asignaciones después del ajuste del ciclo:', asignaciones);
 }
+
 
 // Función auxiliar para encontrar el ciclo cerrado
 function encontrarCiclo(asignaciones, startI, startJ) {
