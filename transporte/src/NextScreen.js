@@ -5,6 +5,7 @@ import { costoMinimo } from './Algorithms/CostoMinimo.js';
 import { metodoVogel } from './Algorithms/Vogel.js';
 import { Modi } from './Algorithms/Modi.js'
 import { desbalanceado } from './Algorithms/Desbalance_degradado.js';
+import { steppingStone } from './Algorithms/steppingstone.js';
 import './NextScreen.css';
 
 function NextScreen() {
@@ -24,22 +25,7 @@ function NextScreen() {
 
 
   if (algoritmo === 'esquinaNoroeste') {
-/*     matrizD = desbalanceado(costMatrix, supply, demand);
 
- 
-    fase1 = esquinaNoroeste(matrizD.nuevaSupply, matrizD.deman);//! aqui en demand es donde deberia ir un 0 a final para el desbalance
-    console.table(fase1.solucion);
-    console.table(matrizD.expandedMatrix);
-
-    pasos = fase1.iteraciones;
-  
-    const expandedMatri =  matrizD.expandedMatrix.map((row, index) => [...row, matrizD.nuevaSupply[index]]);
-    expandedMatri.push([...matrizD.deman, 0]);
-
-
-    combinar = combinarMatrices(expandedMatri, fase1.solucion);
-    console.table(combinar);
- */
     fase1 = esquinaNoroeste( supply, demand);
     pasos = fase1.iteraciones;
     combinar = combinarMatrices(expandedMatrix, fase1.solucion);
@@ -51,8 +37,8 @@ function NextScreen() {
      const  metodoM = Modi(costMatrix, demand, supply, fase1.solucion);
       console.log(metodoM);
     } else {
-      //aqui el de stepping stone
-      console.log("step");
+      const stepp = steppingStone(costMatrix, demand, supply, fase1.solucion);
+      console.log(stepp);
     }
   }
   else if (algoritmo === 'matrizCostoMinimo') {
@@ -64,8 +50,8 @@ function NextScreen() {
       // const  metodoM = Modi(costMatrix, demand, supply, fase1);
       console.log("modi");
     } else {
-      //aqui el de stepping stone
-      console.log("step");
+      const stepp = steppingStone(costMatrix, demand, supply, fase1.solucion);
+      console.log(stepp);
     }
   }
   else {
@@ -79,8 +65,8 @@ function NextScreen() {
       // const  metodoM = Modi(costMatrix, demand, supply, fase1);
       console.log("modi");
     } else {
-      //aqui el de stepping stone
-      console.log("step");
+      const stepp = steppingStone(costMatrix, demand, supply, fase1.solucion);
+      console.log(stepp);
     }
 
 
