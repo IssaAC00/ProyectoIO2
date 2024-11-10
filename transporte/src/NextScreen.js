@@ -1,9 +1,9 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { esquinaNoroeste, combinarMatrices } from './Algorithms/EsquinasNorOeste.js'
-import { costoMinimo, combinarMatricesMinimo } from './Algorithms/CostoMinimo.js';
+import { costoMinimo } from './Algorithms/CostoMinimo.js';
 import { metodoVogel } from './Algorithms/Vogel.js';
-import { metodoMODI, Modi } from './Algorithms/Modi.js'
+import {  Modi } from './Algorithms/Modi.js'
 import './NextScreen.css';
 
 function NextScreen() {
@@ -13,7 +13,7 @@ function NextScreen() {
   let combinar = [];
   let metodoM = {};
   let pasos = [];
-  // console.log('Datos recibidos:', { supply, demand, costMatrix }); // Verifica los datos recibidos
+   console.log('Datos recibidos:', { supply, demand, costMatrix }); // Verifica los datos recibidos
 
 
   const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
@@ -48,9 +48,11 @@ function NextScreen() {
     }
   }
   else {
-    fase1 = metodoVogel(supply, demand);
+    fase1 = metodoVogel(costMatrix,supply, demand);
     pasos = fase1.iteraciones;
     combinar = combinarMatrices(expandedMatrix, fase1.solucion);
+    console.log(fase1.solucion);
+    console.log(fase1.iteraciones);
     if (algoritmoFase2 === 'modi') {
       //aqui el modi
       // const  metodoM = Modi(costMatrix, demand, supply, fase1);

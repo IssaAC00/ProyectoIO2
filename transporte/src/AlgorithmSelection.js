@@ -7,8 +7,6 @@ function AlgorithmSelection() {
   const navigate = useNavigate();
   const [algoritmo, setAlgoritmo] = useState('');
   const [algoritmoFase2, setAlgoritmoFase2] = useState('');
-  const [degradado, setDegradado] = useState(false);
-  const [desbalanceado, setDesbalanceado] = useState(false);
   const [maximizado, setMaximizado] = useState(false);
   const [rutasProhibidas, setRutasProhibidas] = useState(false);
 
@@ -17,8 +15,6 @@ function AlgorithmSelection() {
     const selectedOptions = {
       algoritmo,
       algoritmoFase2,
-      degradado,
-      desbalanceado,
       maximizado,
       rutasProhibidas,
     };

@@ -72,7 +72,7 @@ export function costoMinimo(costos, oferta, demanda) {
     return {solucion, iteraciones};
 }
 
-
+/* 
 export function combinarMatricesMinimo(matriz1, matriz2) {
     const resultado = [];
 
@@ -93,4 +93,4 @@ export function combinarMatricesMinimo(matriz1, matriz2) {
     }
 
     return resultado;
-}
+} */
