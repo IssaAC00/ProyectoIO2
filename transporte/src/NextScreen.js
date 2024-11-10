@@ -9,22 +9,6 @@ import { steppingStone , visualizarMatriz} from './Algorithms/steppingstone.js';
 import './NextScreen.css';
 
 
-const Iteracion = ({ iteracion }) => (
-  <div>
-    <h4>Costos Reducidos:</h4>
-    <table>
-      <tbody> {iteracion.costosReducidos.map((fila, i) =>
-        (<tr key={i}> {fila.map((valor, j) => (<td key={j}>{valor}</td>))} </tr>))}
-      </tbody>
-    </table>
-    <p><strong>Es Óptima:</strong> {iteracion.esOptima.toString()}</p>
-    <p><strong>Selección Stepping Stone:</strong>
-      Columna: {iteracion.seleccionSteppingStone.columna},
-      Fila: {iteracion.seleccionSteppingStone.fila}</p>
-    <p><strong>Valores U:</strong> {iteracion.u.join(', ')}</p>
-    <p><strong>Valores V:</strong> {iteracion.v.join(', ')}</p> </div>
-);
-
 
 function NextScreen() {
   const location = useLocation();
