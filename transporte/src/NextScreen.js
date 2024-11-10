@@ -8,27 +8,64 @@ import './NextScreen.css';
 
 function NextScreen() {
   const location = useLocation();
-  const { supply, demand, costMatrix, algoritmo } = location.state || {};
-
-  console.log('Datos recibidos:', { supply, demand, costMatrix }); // Verifica los datos recibidos
-
-
+  const { supply, demand, costMatrix, algoritmo, algoritmoFase2 } = location.state || {};
+  let fase1 = {};
+  let combinar = [];
+  let metodoM = {};
+  let pasos = [];
+  // console.log('Datos recibidos:', { supply, demand, costMatrix }); // Verifica los datos recibidos
 
 
   const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
   expandedMatrix.push([...demand, 0]);
   console.log(expandedMatrix);
 
-  const Noroestee = esquinaNoroeste(supply, demand);
-  // const costoMin = costoMinimo(costMatrix, supply, demand);
-  // const Vogel = metodoVogel(costMatrix, supply, demand);
-  // const combinar = combinarMatrices( expandedMatrix , costoMin);
-  const pasos = Noroestee.iteraciones;
-  const combinar = combinarMatrices(expandedMatrix, Noroestee.solucion);
-  //console.log(expandedMatrix);
-  // console.table(Noroestee);
-  //const combinar = combinarMatricesMinimo(expandedMatrix, Vogel);
-  // const  metodoM = Modi(costMatrix, demand, supply, Noroestee);
+
+  if (algoritmo === 'esquinaNoroeste') {
+    fase1 = esquinaNoroeste(supply, demand);
+    pasos = fase1.iteraciones;
+    combinar = combinarMatrices(expandedMatrix, fase1.solucion);
+    if (algoritmoFase2 === 'modi') {
+      //aqui el modi
+      // const  metodoM = Modi(costMatrix, demand, supply, Noroestee);
+      console.log("modi");
+    } else {
+      //aqui el de stepping stone
+      console.log("step");
+    }
+  }
+  else if (algoritmo === 'matrizCostoMinimo') {
+    fase1 = costoMinimo(costMatrix ,supply, demand);
+    pasos = fase1.iteraciones;
+    combinar = combinarMatrices(expandedMatrix, fase1.solucion);
+    if (algoritmoFase2 === 'modi') {
+      //aqui el modi
+      // const  metodoM = Modi(costMatrix, demand, supply, fase1);
+      console.log("modi");
+    } else {
+      //aqui el de stepping stone
+      console.log("step");
+    }
+  }
+  else {
+    fase1 = metodoVogel(supply, demand);
+    pasos = fase1.iteraciones;
+    combinar = combinarMatrices(expandedMatrix, fase1.solucion);
+    if (algoritmoFase2 === 'modi') {
+      //aqui el modi
+      // const  metodoM = Modi(costMatrix, demand, supply, fase1);
+      console.log("modi");
+    } else {
+      //aqui el de stepping stone
+      console.log("step");
+    }
+
+
+  }
+
+
+
+
   console.log(combinar);
 
   const numColumns = combinar[0].length; // Número de columnas en la matriz
@@ -40,13 +77,13 @@ function NextScreen() {
       <h1> {algoritmo} </h1>
 
       <div>
-      <h2>Iteraciones</h2>
-      <ol>
-        {pasos.map((iteracion, index) => (
-          <li key={index}>{iteracion}</li>
-        ))}
-      </ol>
-    </div>
+        <h2>Iteraciones</h2>
+        <ol>
+          {pasos.map((iteracion, index) => (
+            <li key={index}>{iteracion}</li>
+          ))}
+        </ol>
+      </div>
 
       <div>
         {combinar ? (

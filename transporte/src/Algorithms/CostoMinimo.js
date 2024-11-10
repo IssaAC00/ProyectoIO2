@@ -69,7 +69,7 @@ export function costoMinimo(costos, oferta, demanda) {
     });
     console.log("Matriz de solución final:", solucion);
 
-    return solucion;
+    return {solucion, iteraciones};
 }
 
 

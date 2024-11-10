@@ -6,6 +6,7 @@ import './App.css';
 function AlgorithmSelection() {
   const navigate = useNavigate();
   const [algoritmo, setAlgoritmo] = useState('');
+  const [algoritmoFase2, setAlgoritmoFase2] = useState('');
   const [degradado, setDegradado] = useState(false);
   const [desbalanceado, setDesbalanceado] = useState(false);
   const [maximizado, setMaximizado] = useState(false);
@@ -15,6 +16,7 @@ function AlgorithmSelection() {
     e.preventDefault();
     const selectedOptions = {
       algoritmo,
+      algoritmoFase2,
       degradado,
       desbalanceado,
       maximizado,
@@ -61,40 +63,22 @@ function AlgorithmSelection() {
             <input 
               type="radio" 
               value="steppingStone" 
-              checked={algoritmo === 'steppingStone'} 
-              onChange={(e) => setAlgoritmo(e.target.value)} 
+              checked={algoritmoFase2 === 'steppingStone'} 
+              onChange={(e) => setAlgoritmoFase2(e.target.value)} 
             /> Stepping Stone
           </label>
           <label>
             <input 
               type="radio" 
               value="modi" 
-              checked={algoritmo === 'modi'} 
-              onChange={(e) => setAlgoritmo(e.target.value)} 
+              checked={algoritmoFase2 === 'modi'} 
+              onChange={(e) => setAlgoritmoFase2(e.target.value)} 
             /> Modi o u/v
           </label>
         </div>
 
         <div className="form-section">
           <h2>Opciones Adicionales</h2>
-          <div className="checkbox-group">
-            <label>
-              <input 
-                type="checkbox" 
-                checked={degradado} 
-                onChange={() => setDegradado(!degradado)} 
-              /> Problema Degradado
-            </label>
-          </div>
-          <div className="checkbox-group">
-            <label>
-              <input 
-                type="checkbox" 
-                checked={desbalanceado} 
-                onChange={() => setDesbalanceado(!desbalanceado)} 
-              /> Problema Desbalanceado
-            </label>
-          </div>
           <div className="checkbox-group">
             <label>
               <input 

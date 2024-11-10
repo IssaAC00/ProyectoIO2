@@ -5,7 +5,7 @@ import './App.css';
 function DataInput() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { algoritmo, degradado, desbalanceado, maximizado, rutasProhibidas } = location.state || {};
+  const { algoritmo, algoritmoFase2 , degradado, desbalanceado, maximizado, rutasProhibidas} = location.state || {};
 
   const [data, setData] = useState('');
 
@@ -33,6 +33,7 @@ function DataInput() {
           demand,
           costMatrix,
           algoritmo,
+          algoritmoFase2,
           degradado,
           desbalanceado,
           maximizado,
