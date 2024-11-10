@@ -3,17 +3,19 @@ import { useLocation } from 'react-router-dom';
 import { esquinaNoroeste, combinarMatrices } from './Algorithms/EsquinasNorOeste.js'
 import { costoMinimo } from './Algorithms/CostoMinimo.js';
 import { metodoVogel } from './Algorithms/Vogel.js';
-import {  Modi } from './Algorithms/Modi.js'
+import { Modi } from './Algorithms/Modi.js'
+import { desbalanceado } from './Algorithms/Desbalance_degradado.js';
 import './NextScreen.css';
 
 function NextScreen() {
   const location = useLocation();
   const { supply, demand, costMatrix, algoritmo, algoritmoFase2 } = location.state || {};
   let fase1 = {};
+  let matrizD = [];
   let combinar = [];
   let metodoM = {};
   let pasos = [];
-   console.log('Datos recibidos:', { supply, demand, costMatrix }); // Verifica los datos recibidos
+  console.log('Datos recibidos:', { supply, demand, costMatrix }); // Verifica los datos recibidos
 
 
   const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
@@ -22,20 +24,39 @@ function NextScreen() {
 
 
   if (algoritmo === 'esquinaNoroeste') {
-    fase1 = esquinaNoroeste(supply, demand);
+/*     matrizD = desbalanceado(costMatrix, supply, demand);
+
+ 
+    fase1 = esquinaNoroeste(matrizD.nuevaSupply, matrizD.deman);//! aqui en demand es donde deberia ir un 0 a final para el desbalance
+    console.table(fase1.solucion);
+    console.table(matrizD.expandedMatrix);
+
+    pasos = fase1.iteraciones;
+  
+    const expandedMatri =  matrizD.expandedMatrix.map((row, index) => [...row, matrizD.nuevaSupply[index]]);
+    expandedMatri.push([...matrizD.deman, 0]);
+
+
+    combinar = combinarMatrices(expandedMatri, fase1.solucion);
+    console.table(combinar);
+ */
+    fase1 = esquinaNoroeste( supply, demand);
     pasos = fase1.iteraciones;
     combinar = combinarMatrices(expandedMatrix, fase1.solucion);
+    console.table(fase1.solucion);
+
+
     if (algoritmoFase2 === 'modi') {
       //aqui el modi
-      // const  metodoM = Modi(costMatrix, demand, supply, Noroestee);
-      console.log("modi");
+     const  metodoM = Modi(costMatrix, demand, supply, fase1.solucion);
+      console.log(metodoM);
     } else {
       //aqui el de stepping stone
       console.log("step");
     }
   }
   else if (algoritmo === 'matrizCostoMinimo') {
-    fase1 = costoMinimo(costMatrix ,supply, demand);
+    fase1 = costoMinimo(costMatrix, supply, demand);
     pasos = fase1.iteraciones;
     combinar = combinarMatrices(expandedMatrix, fase1.solucion);
     if (algoritmoFase2 === 'modi') {
@@ -48,7 +69,7 @@ function NextScreen() {
     }
   }
   else {
-    fase1 = metodoVogel(costMatrix,supply, demand);
+    fase1 = metodoVogel(costMatrix, supply, demand);
     pasos = fase1.iteraciones;
     combinar = combinarMatrices(expandedMatrix, fase1.solucion);
     console.log(fase1.solucion);

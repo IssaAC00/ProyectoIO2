@@ -1,7 +1,7 @@
 
 
 export function esquinaNoroeste(oferta, demanda) {
-    const solucion = Array.from({ length: oferta.length  }, () => Array(demanda.length + 1).fill(0));
+    const solucion = Array.from({ length: oferta.length  }, () => Array(demanda.length + 1).fill(0));//!si es desbalanceado + 2
     let i = 0; 
     let j = 0; 
     const iteraciones = []; 

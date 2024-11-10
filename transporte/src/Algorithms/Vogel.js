@@ -19,6 +19,7 @@ export function metodoVogel(costos, oferta, demanda) {
     const solucion = Array.from({ length: oferta.length }, () => Array(demanda.length + 1).fill(0));
     const iteraciones = [];
 
+
     // Remover el valor extra de oferta que es la suma de los demás
     oferta.pop();
     let ofertaRestante = [...oferta];
@@ -48,7 +49,9 @@ export function metodoVogel(costos, oferta, demanda) {
 
         const asignacion = Math.min(ofertaRestante[i], demandaRestante[j]);
         solucion[i][j] = asignacion;
-        iteraciones.push(`Asignar ${asignacion} unidades a la celda [${i + 1}, ${j + 1}] de costo ${costos[i][j]}`);
+        iteraciones.push(`Asignar ${asignacion} unidades a la celda [${i + 1}, ${j + 1}] de costo ${costos[i][j]}
+                penalizacionFilas ${penalizacionFilas} penalizacionColumnas ${penalizacionColumnas}
+            `);
 
         ofertaRestante[i] -= asignacion;
         demandaRestante[j] -= asignacion;
