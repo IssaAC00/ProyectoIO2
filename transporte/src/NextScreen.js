@@ -30,8 +30,8 @@ function NextScreen() {
 
 
   if (algoritmo === 'esquinaNoroeste') {
-    const prueba = desbalanceadoFila(costMatrix, supply, demand);
-    console.log(prueba);
+    //const prueba = desbalanceadoFila(costMatrix, supply, demand);
+   // console.log(prueba);
 
     fase1 = esquinaNoroeste(supply, demand);
     pasos = fase1.iteraciones;
