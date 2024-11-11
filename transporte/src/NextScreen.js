@@ -11,18 +11,18 @@ import './NextScreen.css';
 function NextScreen() {
   const location = useLocation();
   const { supply, demand, costMatrix, algoritmo, algoritmoFase2 } = location.state || {};
-
+  const costMatrixCopy = JSON.parse(JSON.stringify(costMatrix));
   console.log('Datos recibidos:', { supply, demand, costMatrix });
 
 
   const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
   expandedMatrix.push([...demand, 0]);
-
+  
 
   const aplicarFase2 = (solucionInicial) => {
     const fase2Resultado = algoritmoFase2 === 'modi'
-      ? Modi(costMatrix, demand, supply, solucionInicial)
-      : steppingStone(costMatrix, demand, supply, solucionInicial);
+      ? Modi(costMatrixCopy, demand, supply, solucionInicial)
+      : steppingStone(costMatrixCopy, demand, supply, solucionInicial);
     return {
       iteraciones: fase2Resultado.iteraciones,
       asignaciones: combinarMatrices(expandedMatrix, fase2Resultado.asignaciones),
@@ -30,11 +30,15 @@ function NextScreen() {
   };
 
 
+
+
+
+
   let fase1 = {};
   let matrizD = [];
   let pasos = [];
   let resultadoFase2 = {};
- 
+
 
 
   switch (algoritmo) {
@@ -108,7 +112,7 @@ function NextScreen() {
 
 const TablaMatriz = ({ matriz, titulo }) => {
   const numColumns = matriz[0].length; // Número de columnas en la matriz
-  const numRows = matriz.length; 
+  const numRows = matriz.length;
 
   return (
     <div>
@@ -170,7 +174,7 @@ const Fase2Modi = ({ iteraciones }) => (
           <thead>
             <tr>
               <th></th>
-              {Array.from({ length:  iteracion.costosReducidos.length + 1  }, (_, index) => (
+              {Array.from({ length: iteracion.costosReducidos.length  }, (_, index) => (
                 <th key={index} style={{ backgroundColor: '#007bff', color: '#fff' }}>
                   W{index + 1}
                 </th>

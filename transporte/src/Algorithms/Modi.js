@@ -1,4 +1,9 @@
 export function Modi(costos, demanda, oferta, fase1) {
+
+    console.log(`costos entrantes: `);
+    console.table(costos);
+   
+    console.table(fase1);
     const iteraciones = [];
     let u, v, esOptima, costosReducidos;
     const filas = costos.length;
@@ -19,11 +24,11 @@ export function Modi(costos, demanda, oferta, fase1) {
             cambios = false;
             for (let i = 0; i < filas; i++) {
                 for (let j = 0; j < columnas; j++) {
-                    if (asignaciones[i][j] > 0 || asignaciones[i][j] > -1 ) { 
-                        
+                    if (asignaciones[i][j] > 0 || asignaciones[i][j] === -1 ) { // se fija cuales tienen asignacion 
+                        console.log(asignaciones[i][j]);
                         if (u[i] !== null && v[j] === null) {
                             v[j] = costos[i][j] - u[i];
-                            console.log(costos[i][j]);
+                           // console.log(costos[i][j]);
                             cambios = true;
                         } else if (u[i] === null && v[j] !== null) {
                             u[i] = costos[i][j] - v[j];
