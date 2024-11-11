@@ -30,25 +30,25 @@ export function desbalanceadoFila(costMatrix, supply, demand) {
     const demandatotal = demand.at(-1);
 
     if (ofertatotal !== demandatotal) {
-        // Crear una nueva matriz con la fila extra
+       
         const expandedMatrix = [...costMatrix];
 
-        // Insertar una fila vacía entre la penúltima y última fila
+    
         const emptyRow = Array(demand.length).fill(0);
         expandedMatrix.splice(expandedMatrix.length - 1, 0, emptyRow);
 
-        // Extender las filas existentes con un valor adicional de 0
+      
         expandedMatrix.forEach((row, index) => {
             if (index < expandedMatrix.length - 2) {
                 row.push(supply[index]);
             } else if (index === expandedMatrix.length - 2) {
-                row.push(0); // La nueva fila vacía
+                row.push(0); 
             }
         });
 
-        // Agregar la columna de demandas
+    
         const newSupply = supply.slice();
-        newSupply.push(0); // Añadir un valor de 0 al final de supply
+        newSupply.push(0); 
 
         const demandWithoutTotal = demand.slice(0, -1);
         const newDemand = [...demandWithoutTotal, 0];
@@ -100,51 +100,51 @@ function contarNoCero(matriz) {
     const columnas = demand.length;
     const requiredAsignaciones = filas + columnas - 1;
 
-    // Contar asignaciones básicas en fase1
+   
     let asignaciones = [];
     fase1.forEach((row, i) => {
         row.forEach((value, j) => {
-            if (value > 0 || value === -1) {  // Cuenta celdas con asignación o degradación
+            if (value > 0 || value === -1) {  
                 asignaciones.push([i, j]);
             }
         });
     });
 
-    // Revisar si hay degradación
+  
     if (asignaciones.length < requiredAsignaciones) {
-        console.log(`Problema con degradación. Se requieren ${requiredAsignaciones} asignaciones básicas, pero solo hay ${asignaciones.length}.`);
+      //  console.log(`Problema con degradación. Se requieren ${requiredAsignaciones} asignaciones básicas, pero solo hay ${asignaciones.length}.`);
 
-        // Calcular cuántas asignaciones faltan
+       
         let asignacionesRestantes = requiredAsignaciones - asignaciones.length;
 
-        // Crear matriz auxiliar para verificar qué celdas ya están asignadas
+  
         const asignadas = Array.from({ length: filas }, () => Array(columnas).fill(false));
         asignaciones.forEach(([i, j]) => {
             asignadas[i][j] = true;
         });
 
-        // Generar lista de celdas no asignadas ordenadas por menor costo
+     
         
         let celdasDisponibles = [];
         for (let i = 0; i < filas; i++) {
             for (let j = 0; j < columnas; j++) {
-                if (fase1[i][j] === 0) { // Celda no asignada
+                if (fase1[i][j] === 0) {
                     console.log(costMatrix[i][j]);
                     celdasDisponibles.push({ fila: i, columna: j, costo: costMatrix[i][j] });
                 }
             }
         }
 
-        // Ordenar las celdas disponibles por costo ascendente
+  
         celdasDisponibles.sort((a, b) => a.costo - b.costo);
-        console.log(`celdas disponibles  `);
-        console.log(celdasDisponibles);
+       // console.log(`celdas disponibles  `);
+       // console.log(celdasDisponibles);
 
-        // Asignar -1 en las posiciones de menor costo hasta alcanzar el número de asignaciones requeridas
+  
         for (let k = 0; k < celdasDisponibles.length && asignacionesRestantes > 0; k++) {
             const { fila, columna } = celdasDisponibles[k];
-            if (fase1[fila][columna] === 0) {  // Asegura que la celda esté sin asignar
-                fase1[fila][columna] = -1;  // Marcar como cero de asignación por degradación
+            if (fase1[fila][columna] === 0) {  
+                fase1[fila][columna] = -1;  
                 asignaciones.push([fila, columna]);
                 asignacionesRestantes--;
             }

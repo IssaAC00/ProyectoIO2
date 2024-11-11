@@ -14,14 +14,14 @@ function NextScreen() {
   
   console.log('Datos recibidos:', { supply, demand, costMatrix });
 
-  // Expande la matriz inicial con demanda y oferta
+ 
   const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
   expandedMatrix.push([...demand, 0]);
 
-  // Función auxiliar para ejecutar la Fase 2
+
   const aplicarFase2 = (solucionInicial) => {
     const fase2Resultado = algoritmoFase2 === 'modi' 
-      ? Modi(costMatrix, demand, supply, solucionInicial)
+      ? Modi(expandedMatrix, demand, supply, solucionInicial)
       : steppingStone(costMatrix, demand, supply, solucionInicial);
     return {
       iteraciones: fase2Resultado.iteraciones,
@@ -29,13 +29,13 @@ function NextScreen() {
     };
   };
 
-  // Variables de salida
+
   let fase1 = {};
   let matrizD = [];
   let pasos = [];
   let resultadoFase2 = {};
 
-  // Ejecución de Fase 1
+
   switch (algoritmo) {
     case 'esquinaNoroeste':
       fase1 = esquinaNoroeste(supply, demand);
@@ -59,16 +59,16 @@ function NextScreen() {
       break;
   }
 
-  // Ejecuta Fase 2 si hay una solución inicial de Fase 1
+
   const matrizFase1 = combinarMatrices(expandedMatrix, fase1.solucion);
   resultadoFase2 = aplicarFase2(fase1.solucion);
 
-  // Renderizado final
+
   return (
     <div className="App">
       <h1>{algoritmo}</h1>
 
-      {/* Iteraciones de Fase 1 */}
+   
       <div>
         <h2>Iteraciones</h2>
         <ol>
@@ -78,7 +78,7 @@ function NextScreen() {
         </ol>
       </div>
 
-      {/* Matriz combinada de Fase 1 */}
+
       <div>
         {matrizFase1 ? (
           <TablaMatriz matriz={matrizFase1} titulo="Oferta y Demanda - Fase 1" />
@@ -87,7 +87,7 @@ function NextScreen() {
         )}
       </div>
 
-      {/* Iteraciones y resultado de Fase 2 */}
+    
       <div>
         <h1>{algoritmoFase2}</h1>
         {algoritmoFase2 === 'modi' && (
@@ -104,7 +104,7 @@ function NextScreen() {
   );
 }
 
-// Componente para mostrar tablas de matrices
+
 const TablaMatriz = ({ matriz, titulo }) => {
   const numColumns = matriz[0].length;
   const numRows = matriz.length;
@@ -141,7 +141,7 @@ const TablaMatriz = ({ matriz, titulo }) => {
   );
 };
 
-// Componente específico para mostrar iteraciones del algoritmo Modi
+
 const Fase2Modi = ({ iteraciones }) => (
   <div>
     <h2>Iteraciones Modi</h2>

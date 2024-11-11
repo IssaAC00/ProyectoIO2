@@ -1,6 +1,6 @@
 
 
-// Función para calcular penalización en cada fila o columna
+
 
 function calcularPenalizacion(costos, indicesValidos, esColumna = false) {
     return indicesValidos.map((index) => {
@@ -20,7 +20,7 @@ export function metodoVogel(costos, oferta, demanda) {
     const iteraciones = [];
 
 
-    // Remover el valor extra de oferta que es la suma de los demás
+   
     oferta.pop();
     let ofertaRestante = [...oferta];
     let demandaRestante = [...demanda];
@@ -29,7 +29,7 @@ export function metodoVogel(costos, oferta, demanda) {
         const indicesFilas = ofertaRestante.map((o, i) => o > 0 ? i : -1).filter(i => i !== -1);
         const indicesColumnas = demandaRestante.map((d, j) => d > 0 ? j : -1).filter(j => j !== -1);
 
-        // Chequeo adicional para evitar acceso fuera de rango
+        
         if (indicesFilas.length === 0 || indicesColumnas.length === 0) break;
 
         const penalizacionFilas = calcularPenalizacion(costos, indicesFilas);
@@ -67,7 +67,7 @@ export function metodoVogel(costos, oferta, demanda) {
             }
         }
 
-        // Verificar si se ha cumplido toda la oferta y la demanda
+       
         if (ofertaRestante.every(o => o === 0) && demandaRestante.every(d => d === 0)) break;
     }
 
