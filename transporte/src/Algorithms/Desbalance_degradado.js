@@ -15,7 +15,7 @@ export function desbalanceado(costMatrix, supply, demand) {
         let deman = nuevaDemanda.slice(0, -1) ;
         return { expandedMatrix,  nuevaSupply, deman };
     } else {
-        return 'No esta desbalanceado';
+        return  { costMatrix,  supply, demand }; 
     }
 
 
@@ -60,39 +60,7 @@ export function desbalanceadoFila(costMatrix, supply, demand) {
 }
 
 
-export function degradacion (fase1,  ){
-    const asignaciones =  contarNoCero(fase1);
-    const degrada = contarFilasYColumnas(fase1);
-    if (asignaciones !== degrada){
 
-    }
-
-}
-
-
-function contarNoCero(matriz) {
-    let contador = 0;
-  
-    for (let i = 0; i < matriz.length; i++) {
-      for (let j = 0; j < matriz[i].length; j++) {
-        if (matriz[i][j] !== 0) {
-          contador++;
-        }
-      }
-    }
-  
-    return contador;
-  }
-  
-
-  function contarFilasYColumnas(matriz) {
-    const filas = matriz.length;
-    const columnas = matriz[0].length;
-    const resultadoFilas = filas - 1;
-    const resultadoColumnas = columnas - 1;
-  
-    return resultadoColumnas + resultadoFilas - 1 
-  }
 
   export function verificarDegradacion(costMatrix, fase1, supply, demand) {
  
@@ -129,7 +97,7 @@ function contarNoCero(matriz) {
         for (let i = 0; i < filas; i++) {
             for (let j = 0; j < columnas; j++) {
                 if (fase1[i][j] === 0) {
-                    console.log(costMatrix[i][j]);
+                 //   console.log(costMatrix[i][j]);
                     celdasDisponibles.push({ fila: i, columna: j, costo: costMatrix[i][j] });
                 }
             }
@@ -150,9 +118,9 @@ function contarNoCero(matriz) {
             }
         }
 
-        console.log("Asignaciones básicas ajustadas para eliminar la degradación:", asignaciones);
+       // console.log("Asignaciones básicas ajustadas para eliminar la degradación:", asignaciones);
     } else {
-        console.log("No hay degradación. Las asignaciones son suficientes.");
+      //  console.log("No hay degradación. Las asignaciones son suficientes.");
     }
 
     return fase1;

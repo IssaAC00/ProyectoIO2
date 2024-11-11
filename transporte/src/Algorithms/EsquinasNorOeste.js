@@ -21,11 +21,7 @@ export function esquinaNoroeste(oferta, demanda) {
         if (demanda[j] === 0) j++; 
     }
 
-    console.log("Iteraciones necesarias para la solución factible:");
-    iteraciones.forEach((iteracion, idx) => {
-        console.log(`Iteración ${idx + 1}: ${iteracion}`);
-    });
-    console.log("Matriz de solución final:", solucion);
+
 
     return {solucion , iteraciones};
 

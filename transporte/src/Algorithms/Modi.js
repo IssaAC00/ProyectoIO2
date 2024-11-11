@@ -1,9 +1,9 @@
 export function Modi(costos, demanda, oferta, fase1) {
 
-    console.log(`costos entrantes: `);
+   /*  console.log(`costos entrantes: `);
     console.table(costos);
    
-    console.table(fase1);
+    console.table(fase1); */
     const iteraciones = [];
     let u, v, esOptima, costosReducidos;
     const filas = costos.length;
@@ -25,14 +25,14 @@ export function Modi(costos, demanda, oferta, fase1) {
             for (let i = 0; i < filas; i++) {
                 for (let j = 0; j < columnas; j++) {
                     if (asignaciones[i][j] > 0 || asignaciones[i][j] === -1 ) { // se fija cuales tienen asignacion 
-                        console.log(asignaciones[i][j]);
+                       // console.log(asignaciones[i][j]);
                         if (u[i] !== null && v[j] === null) {
                             v[j] = costos[i][j] - u[i];
                            // console.log(costos[i][j]);
                             cambios = true;
                         } else if (u[i] === null && v[j] !== null) {
                             u[i] = costos[i][j] - v[j];
-                            console.log(costos[i][j]);
+                          //  console.log(costos[i][j]);
                             cambios = true;
                         }
                     }
@@ -50,16 +50,16 @@ export function Modi(costos, demanda, oferta, fase1) {
             for (let j = 0; j < columnas; j++) {
                 if (asignaciones[i][j] === 0 ) { // Solo evaluar celdas no asignadas
                     costosReducidos[i][j] = costos[i][j] - (u[i] + v[j]);
-                    console.log( `costos Reducidos ${costosReducidos}` );
+                   // console.log( `costos Reducidos ${costosReducidos}` );
                     if (costosReducidos[i][j] <= 0) {
                         esOptima = false;
                         if (costosReducidos[i][j] < minReducido) {
                             minReducido = costosReducidos[i][j];
-                            console.log(`min reducido ${minReducido}`);
+                         //   console.log(`min reducido ${minReducido}`);
                             minI = i;
                             minJ = j;
 
-                            console.log(`min i = ${minI} minJ = ${minJ}`);
+                          //  console.log(`min i = ${minI} minJ = ${minJ}`);
                         }
                     }
                 }
@@ -81,7 +81,7 @@ export function Modi(costos, demanda, oferta, fase1) {
    
         ajustarCicloCerrado(asignaciones, minI, minJ);
         contador++ ;
-    } while (!esOptima && contador === 6); 
+    } while (!esOptima && contador === 10); 
 
     const valorZ = calcularCostoTotal(costos, asignaciones);
    
@@ -92,7 +92,7 @@ export function Modi(costos, demanda, oferta, fase1) {
 function ajustarCicloCerrado(asignaciones, i, j) {
    
     const ciclo = encontrarCiclo(asignaciones, i, j);
-    console.log('Ciclo encontrado:', ciclo);
+  //  console.log('Ciclo encontrado:', ciclo);
 
 
     let minValor = Infinity;
@@ -100,12 +100,12 @@ function ajustarCicloCerrado(asignaciones, i, j) {
         const [fila, col] = ciclo[k];
         minValor = Math.min(minValor, asignaciones[fila][col]);
     }
-    console.log(`Valor mínimo en las posiciones impares del ciclo: ${minValor}`);
+  //  console.log(`Valor mínimo en las posiciones impares del ciclo: ${minValor}`);
 
    
     for (let k = 0; k < ciclo.length; k++) {
         const [fila, col] = ciclo[k];
-        console.log(`Celda actual en ciclo [${fila}, ${col}]: Valor antes del ajuste: ${asignaciones[fila][col]}`);
+      //  console.log(`Celda actual en ciclo [${fila}, ${col}]: Valor antes del ajuste: ${asignaciones[fila][col]}`);
         
         if (k % 2 === 0) {
            
@@ -115,10 +115,10 @@ function ajustarCicloCerrado(asignaciones, i, j) {
             asignaciones[fila][col] -= minValor;
         }
 
-        console.log(`Celda [${fila}, ${col}] después del ajuste: ${asignaciones[fila][col]}`);
+      //  console.log(`Celda [${fila}, ${col}] después del ajuste: ${asignaciones[fila][col]}`);
     }
 
-    console.log('Asignaciones después del ajuste del ciclo:', asignaciones);
+ //   console.log('Asignaciones después del ajuste del ciclo:', asignaciones);
 }
 
 

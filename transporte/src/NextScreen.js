@@ -4,7 +4,7 @@ import { esquinaNoroeste, combinarMatrices } from './Algorithms/EsquinasNorOeste
 import { costoMinimo } from './Algorithms/CostoMinimo.js';
 import { metodoVogel } from './Algorithms/Vogel.js';
 import { Modi } from './Algorithms/Modi.js';
-import { verificarDegradacion } from './Algorithms/Desbalance_degradado.js';
+import { verificarDegradacion , desbalanceado} from './Algorithms/Desbalance_degradado.js';
 import { steppingStone } from './Algorithms/steppingstone.js';
 import './NextScreen.css';
 
@@ -13,11 +13,15 @@ function NextScreen() {
   const { supply, demand, costMatrix, algoritmo, algoritmoFase2 } = location.state || {};
   const costMatrixCopy = JSON.parse(JSON.stringify(costMatrix));
   console.log('Datos recibidos:', { supply, demand, costMatrix });
+  let fase1 = {};
+  let matrizD = [];
+  let pasos = [];
+  let resultadoFase2 = {};
 
 
   const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
   expandedMatrix.push([...demand, 0]);
-  
+
 
   const aplicarFase2 = (solucionInicial) => {
     const fase2Resultado = algoritmoFase2 === 'modi'
@@ -26,25 +30,16 @@ function NextScreen() {
     return {
       iteraciones: fase2Resultado.iteraciones,
       asignaciones: combinarMatrices(expandedMatrix, fase2Resultado.asignaciones),
+      valorZ : fase2Resultado.valorZ
     };
   };
-
-
-
-
-
-
-  let fase1 = {};
-  let matrizD = [];
-  let pasos = [];
-  let resultadoFase2 = {};
-
 
 
   switch (algoritmo) {
     case 'esquinaNoroeste':
       fase1 = esquinaNoroeste(supply, demand);
       pasos = fase1.iteraciones;
+      matrizD = verificarDegradacion(expandedMatrix, fase1.solucion, supply, demand);
       break;
 
     case 'matrizCostoMinimo':
@@ -54,8 +49,10 @@ function NextScreen() {
       console.log('Matriz después de verificar degradación:', matrizD);
       break;
 
-    case 'metodoVogel':
-      fase1 = metodoVogel(costMatrix, supply, demand);
+    case 'vogel':
+      fase1 = metodoVogel(costMatrixCopy, supply, demand);
+     // matrizD = verificarDegradacion(expandedMatrix, fase1.solucion, supply, demand);
+      matrizD = fase1.solucion;
       pasos = fase1.iteraciones;
       break;
 
@@ -64,12 +61,17 @@ function NextScreen() {
       break;
   }
 
+  const desbalanceado1 = desbalanceado(costMatrixCopy, supply, demand);
+ 
+  const matrizFase1 = combinarMatrices(expandedMatrix, matrizD);
+  resultadoFase2 = aplicarFase2(matrizD);
 
-  const matrizFase1 = combinarMatrices(expandedMatrix, fase1.solucion);
-  resultadoFase2 = aplicarFase2(fase1.solucion);
+
+  console.log(resultadoFase2.iteraciones);
 
 
   return (
+    
     <div className="App">
       <h1>{algoritmo}</h1>
 
@@ -104,7 +106,11 @@ function NextScreen() {
         ) : (
           <p>No se ingresaron datos correctamente.</p>
         )}
+
+        <h1> Valor de Z {resultadoFase2.valorZ}</h1>
+        
       </div>
+
     </div>
   );
 }
@@ -174,7 +180,7 @@ const Fase2Modi = ({ iteraciones }) => (
           <thead>
             <tr>
               <th></th>
-              {Array.from({ length: iteracion.costosReducidos.length  }, (_, index) => (
+              {Array.from({ length: iteracion.costosReducidos.length }, (_, index) => (
                 <th key={index} style={{ backgroundColor: '#007bff', color: '#fff' }}>
                   W{index + 1}
                 </th>
@@ -211,6 +217,7 @@ const Fase2Modi = ({ iteraciones }) => (
       </div>
     ))}
   </div>
+
 
 
 
