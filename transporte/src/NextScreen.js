@@ -11,17 +11,17 @@ import './NextScreen.css';
 function NextScreen() {
   const location = useLocation();
   const { supply, demand, costMatrix, algoritmo, algoritmoFase2 } = location.state || {};
-  
+
   console.log('Datos recibidos:', { supply, demand, costMatrix });
 
- 
+
   const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
   expandedMatrix.push([...demand, 0]);
 
 
   const aplicarFase2 = (solucionInicial) => {
-    const fase2Resultado = algoritmoFase2 === 'modi' 
-      ? Modi(expandedMatrix, demand, supply, solucionInicial)
+    const fase2Resultado = algoritmoFase2 === 'modi'
+      ? Modi(costMatrix, demand, supply, solucionInicial)
       : steppingStone(costMatrix, demand, supply, solucionInicial);
     return {
       iteraciones: fase2Resultado.iteraciones,
@@ -34,6 +34,7 @@ function NextScreen() {
   let matrizD = [];
   let pasos = [];
   let resultadoFase2 = {};
+ 
 
 
   switch (algoritmo) {
@@ -41,14 +42,14 @@ function NextScreen() {
       fase1 = esquinaNoroeste(supply, demand);
       pasos = fase1.iteraciones;
       break;
-    
+
     case 'matrizCostoMinimo':
       fase1 = costoMinimo(costMatrix, supply, demand);
       pasos = fase1.iteraciones;
       matrizD = verificarDegradacion(expandedMatrix, fase1.solucion, supply, demand);
       console.log('Matriz después de verificar degradación:', matrizD);
       break;
-    
+
     case 'metodoVogel':
       fase1 = metodoVogel(costMatrix, supply, demand);
       pasos = fase1.iteraciones;
@@ -68,7 +69,7 @@ function NextScreen() {
     <div className="App">
       <h1>{algoritmo}</h1>
 
-   
+
       <div>
         <h2>Iteraciones</h2>
         <ol>
@@ -87,13 +88,13 @@ function NextScreen() {
         )}
       </div>
 
-    
+
       <div>
         <h1>{algoritmoFase2}</h1>
         {algoritmoFase2 === 'modi' && (
           <Fase2Modi iteraciones={resultadoFase2.iteraciones} />
         )}
-        
+
         {resultadoFase2.asignaciones ? (
           <TablaMatriz matriz={resultadoFase2.asignaciones} titulo="Resultado Fase 2" />
         ) : (
@@ -106,8 +107,8 @@ function NextScreen() {
 
 
 const TablaMatriz = ({ matriz, titulo }) => {
-  const numColumns = matriz[0].length;
-  const numRows = matriz.length;
+  const numColumns = matriz[0].length; // Número de columnas en la matriz
+  const numRows = matriz.length; 
 
   return (
     <div>
@@ -143,20 +144,72 @@ const TablaMatriz = ({ matriz, titulo }) => {
 
 
 const Fase2Modi = ({ iteraciones }) => (
+
+  // <div>
+  //   <h2>Iteraciones Modi</h2>
+  //   {iteraciones.map((iteracion, index) => (
+  //     <div key={index}>
+  //       <h3>Iteración {index + 1}</h3>
+  //       <h4>Costos Reducidos:</h4>
+  //       <TablaMatriz matriz={iteracion.costosReducidos} />
+  //       <p><strong>Es Óptima:</strong> {iteracion.esOptima.toString()}</p>
+  //       <p><strong>Selección Stepping Stone:</strong> Columna: {iteracion.seleccionSteppingStone.columna}, Fila: {iteracion.seleccionSteppingStone.fila}</p>
+  //       <p><strong>Valores U:</strong> {iteracion.u.join(', ')}</p>
+  //       <p><strong>Valores V:</strong> {iteracion.v.join(', ')}</p>
+  //     </div>
+  //   ))}
+  // </div>
+
   <div>
-    <h2>Iteraciones Modi</h2>
     {iteraciones.map((iteracion, index) => (
       <div key={index}>
         <h3>Iteración {index + 1}</h3>
+
         <h4>Costos Reducidos:</h4>
-        <TablaMatriz matriz={iteracion.costosReducidos} />
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th></th>
+              {Array.from({ length:  iteracion.costosReducidos.length + 1  }, (_, index) => (
+                <th key={index} style={{ backgroundColor: '#007bff', color: '#fff' }}>
+                  W{index + 1}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {iteracion.costosReducidos.map((fila, rowIndex) => (
+              <tr
+                key={rowIndex}
+                style={{ backgroundColor: rowIndex % 2 === 0 ? '#f8f9fa' : '#fff' }}
+              >
+                <td style={{ fontWeight: 'bold' }}>
+                  {rowIndex === iteracion.costosReducidos.length - 1
+                    ? `F${rowIndex + 1}`
+                    : `F${rowIndex + 1}`}
+                </td>
+                {fila.map((cell, colIndex) => (
+                  <td key={colIndex}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
         <p><strong>Es Óptima:</strong> {iteracion.esOptima.toString()}</p>
-        <p><strong>Selección Stepping Stone:</strong> Columna: {iteracion.seleccionSteppingStone.columna}, Fila: {iteracion.seleccionSteppingStone.fila}</p>
+
+        <p>
+          <strong>Selección Stepping Stone:</strong> Columna: {iteracion.seleccionSteppingStone.columna}, Fila: {iteracion.seleccionSteppingStone.fila}
+        </p>
+
         <p><strong>Valores U:</strong> {iteracion.u.join(', ')}</p>
         <p><strong>Valores V:</strong> {iteracion.v.join(', ')}</p>
       </div>
     ))}
   </div>
+
+
+
 );
 
 export default NextScreen;

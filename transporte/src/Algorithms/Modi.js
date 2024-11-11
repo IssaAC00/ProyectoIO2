@@ -76,7 +76,7 @@ export function Modi(costos, demanda, oferta, fase1) {
    
         ajustarCicloCerrado(asignaciones, minI, minJ);
         contador++ ;
-    } while (!esOptima && contador === 5); 
+    } while (!esOptima && contador === 6); 
 
     const valorZ = calcularCostoTotal(costos, asignaciones);
    
