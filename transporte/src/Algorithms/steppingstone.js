@@ -4,36 +4,36 @@ export function steppingStone(costos, demanda, oferta, fase1) {
     let columnas = demanda.length;
     const totalOferta = oferta.reduce((sum, val) => sum + val, 0);
     const totalDemanda = demanda.reduce((sum, val) => sum + val, 0);
+    const asignaciones = fase1.map(row => [...row]);
 
-    // Verificar si el problema es desbalanceado
     let esDesbalanceado = false;
     if (totalOferta !== totalDemanda) {
         esDesbalanceado = true;
         if (totalOferta > totalDemanda) {
-            demanda.push(totalOferta - totalDemanda); // Agregar columna ficticia
+            demanda.push(totalOferta - totalDemanda); 
             for (let i = 0; i < filas; i++) {
-                costos[i].push(0); // Agregar costo ficticio en la nueva columna
+                costos[i].push(0); 
             }
             columnas += 1;
+            console.log("Se ha agregado una columna ficticia con valor 0 en todos los costos debido al desbalance de la oferta y demanda.");
+
         } else {
-            oferta.push(totalDemanda - totalOferta); // Agregar fila ficticia
-            const nuevaFila = new Array(columnas).fill(0); // Nueva fila de costos ficticios
+            oferta.push(totalDemanda - totalOferta);
+            const nuevaFila = new Array(columnas).fill(0); 
             costos.push(nuevaFila);
             filas += 1;
+            console.log("Se ha agregado una fila ficticia con valor 0 en todos los costos debido al desbalance de la oferta y demanda.");
         }
         
     }
 
-    const asignaciones = fase1.map(row => [...row]); // Copiar matriz de asignaciones inicial
     let esOptima;
 
-    // Ciclo iterativo para encontrar la solución óptima
     do {
         esOptima = true;
         let minCostoReducido = Infinity;
         let mejorCelda = null;
 
-        // Evaluar cada celda no asignada para determinar si reduce el costo
         for (let i = 0; i < filas; i++) {
             for (let j = 0; j < columnas; j++) {
                 if (asignaciones[i][j] === 0) {
@@ -47,7 +47,6 @@ export function steppingStone(costos, demanda, oferta, fase1) {
             }
         }
 
-        // Guardar detalles de la iteración actual
         iteraciones.push({
             asignaciones: asignaciones.map(row => [...row]),
             esOptima,
@@ -55,41 +54,42 @@ export function steppingStone(costos, demanda, oferta, fase1) {
             minCostoReducido
         });
 
-        // Si la solución es óptima, termina el ciclo
         if (esOptima) break;
 
-        // Ajustar las asignaciones en función del ciclo encontrado
         ajustarAsignacionSteppingStone(asignaciones, mejorCelda.fila, mejorCelda.columna);
     } while (!esOptima);
 
     const valorZ = calcularCostoTotal(costos, asignaciones);
+    const descripcionCosto = generarDescripcionCosto(costos, asignaciones); 
 
     return { iteraciones, valorZ, asignaciones, esDesbalanceado };
 }
 
 function generarDescripcionCosto(costos, asignaciones) {
-    let descripcion = "The minimum total transportation cost = ";
+    let descripcion = "El costo total mínimo de transporte es: ";
     let calculo = [];
     let totalCosto = 0;
 
-    // Recorrer todas las celdas para generar la descripción
     for (let i = 0; i < costos.length; i++) {
         for (let j = 0; j < costos[i].length; j++) {
             if (asignaciones[i][j] > 0) {
                 const costo = costos[i][j];
                 const cantidad = asignaciones[i][j];
+                const multiplicacion = costo * cantidad;
+                console.log(`${costo}×${cantidad} = ${multiplicacion}`);
                 calculo.push(`${costo}×${cantidad}`);
-                totalCosto += costo * cantidad;
+                totalCosto += multiplicacion;
+            } else {
+                calculo.push(`0×${costos[i][j]}`);
             }
         }
     }
 
-    // Unir los cálculos y agregar el total
     descripcion += calculo.join(' + ') + ` = ${totalCosto}`;
+    console.log("Resultado final:", descripcion); 
     return descripcion;
 }
 
-// Función auxiliar para calcular el costo reducido de una celda no asignada
 function calcularCostoReducido(asignaciones, costos, fila, columna) {
     const ciclo = encontrarCiclo(asignaciones, fila, columna);
     let costoReducido = 0;
@@ -100,7 +100,6 @@ function calcularCostoReducido(asignaciones, costos, fila, columna) {
     return costoReducido;
 }
 
-// Función auxiliar para ajustar la asignación de transporte basado en el ciclo de Stepping Stone
 function ajustarAsignacionSteppingStone(asignaciones, i, j) {
     const ciclo = encontrarCiclo(asignaciones, i, j);
     let minValor = Infinity;
@@ -117,8 +116,6 @@ function ajustarAsignacionSteppingStone(asignaciones, i, j) {
         }
     }
 }
-
-// Función auxiliar para encontrar el ciclo cerrado a partir de una celda no asignada
 function encontrarCiclo(asignaciones, startI, startJ) {
     const filas = asignaciones.length;
     const columnas = asignaciones[0].length;
@@ -157,7 +154,6 @@ function encontrarCiclo(asignaciones, startI, startJ) {
     return ciclo;
 }
 
-// Función auxiliar para calcular el costo total Z
 function calcularCostoTotal(costos, asignaciones) {
     let total = 0;
     for (let i = 0; i < costos.length; i++) {
@@ -170,38 +166,31 @@ function calcularCostoTotal(costos, asignaciones) {
     return total;
 }
 
-// Función para visualizar la matriz incluyendo la columna o fila ficticia
 export function visualizarMatriz(asignaciones, costos, oferta, demanda, esDesbalanceado, descripcionCosto) {
     let matrizHTML = "<table border='1'><tr><th></th>";
     
-    // Añadir las cabeceras de demanda
     demanda.forEach((d, idx) => matrizHTML += `<th>D${idx + 1}</th>`);
     
-    // Si el problema es desbalanceado y hay una fila ficticia, agregar columna ficticia (Supply)
     if (esDesbalanceado && oferta.length > costos.length) {
         matrizHTML += `<th>Supply</th>`;
     }
     matrizHTML += "</tr>";
 
-    // Crear filas para las asignaciones
     for (let i = 0; i < asignaciones.length; i++) {
         matrizHTML += `<tr><td>S${i + 1}</td>`;
         for (let j = 0; j < asignaciones[i].length; j++) {
             matrizHTML += `<td>${costos[i][j]} (${asignaciones[i][j]})</td>`;
         }
-        // Agregar la oferta a la fila
         if (i < oferta.length) {
             matrizHTML += `<td>${oferta[i]}</td>`;
         }
         matrizHTML += "</tr>";
     }
 
-    // Mostrar la fila de demanda
     matrizHTML += "<tr><td>Demand</td>";
     demanda.forEach(d => matrizHTML += `<td>${d}</td>`);
     matrizHTML += "</tr></table>";
 
-    // Agregar la descripción del costo total debajo de la tabla
     matrizHTML += `<p>${descripcionCosto}</p>`;
 
     return matrizHTML;
