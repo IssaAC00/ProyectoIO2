@@ -45,7 +45,7 @@ function NextScreen() {
     case 'matrizCostoMinimo':
       fase1 = costoMinimo(costMatrix, supply, demand);
       pasos = fase1.iteraciones;
-      matrizD = verificarDegradacion(costMatrix, fase1.solucion, supply, demand);
+      matrizD = verificarDegradacion(expandedMatrix, fase1.solucion, supply, demand);
       console.log('Matriz después de verificar degradación:', matrizD);
       break;
     

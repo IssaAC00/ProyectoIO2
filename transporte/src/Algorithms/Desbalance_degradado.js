@@ -124,7 +124,7 @@ function contarNoCero(matriz) {
         });
 
         // Generar lista de celdas no asignadas ordenadas por menor costo
-        console.log(costMatrix);
+        
         let celdasDisponibles = [];
         for (let i = 0; i < filas; i++) {
             for (let j = 0; j < columnas; j++) {
@@ -143,7 +143,7 @@ function contarNoCero(matriz) {
         // Asignar -1 en las posiciones de menor costo hasta alcanzar el número de asignaciones requeridas
         for (let k = 0; k < celdasDisponibles.length && asignacionesRestantes > 0; k++) {
             const { fila, columna } = celdasDisponibles[k];
-            if (fase1[fila][columna] === null) {  // Asegura que la celda esté sin asignar
+            if (fase1[fila][columna] === 0) {  // Asegura que la celda esté sin asignar
                 fase1[fila][columna] = -1;  // Marcar como cero de asignación por degradación
                 asignaciones.push([fila, columna]);
                 asignacionesRestantes--;
