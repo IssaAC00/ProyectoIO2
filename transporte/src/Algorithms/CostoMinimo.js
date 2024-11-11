@@ -63,11 +63,11 @@ export function costoMinimo(costos, oferta, demanda) {
             }
         }
     }
-    console.log("Iteraciones del método de costo mínimo:");
-    iteraciones.forEach((iteracion, idx) => {
-        console.log(`Iteración ${idx + 1}: ${iteracion}`);
-    });
-    console.log("Matriz de solución final:", solucion);
+    // console.log("Iteraciones del método de costo mínimo:");
+    // iteraciones.forEach((iteracion, idx) => {
+    //     console.log(`Iteración ${idx + 1}: ${iteracion}`);
+    // });
+    // console.log("Matriz de solución final:", solucion);
 
     return {solucion, iteraciones};
 }

@@ -1,119 +1,74 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { esquinaNoroeste, combinarMatrices } from './Algorithms/EsquinasNorOeste.js'
+import { esquinaNoroeste, combinarMatrices } from './Algorithms/EsquinasNorOeste.js';
 import { costoMinimo } from './Algorithms/CostoMinimo.js';
 import { metodoVogel } from './Algorithms/Vogel.js';
-import { Modi } from './Algorithms/Modi.js'
-import { desbalanceado, desbalanceadoFila } from './Algorithms/Desbalance_degradado.js';
-import { steppingStone , visualizarMatriz} from './Algorithms/steppingstone.js';
+import { Modi } from './Algorithms/Modi.js';
+import { verificarDegradacion } from './Algorithms/Desbalance_degradado.js';
+import { steppingStone } from './Algorithms/steppingstone.js';
 import './NextScreen.css';
-
-
 
 function NextScreen() {
   const location = useLocation();
   const { supply, demand, costMatrix, algoritmo, algoritmoFase2 } = location.state || {};
-  let fase1 = {};
-  let matrizD = [];
-  let combinar = [];
-  let combinar2 = [];
-  let metodoM = {};
-  let pasos2 = [];
-  let pasos = [];
-  let stepp = {};
-  console.log('Datos recibidos:', { supply, demand, costMatrix }); // Verifica los datos recibidos
+  
+  console.log('Datos recibidos:', { supply, demand, costMatrix });
 
-
+  // Expande la matriz inicial con demanda y oferta
   const expandedMatrix = costMatrix.map((row, index) => [...row, supply[index]]);
   expandedMatrix.push([...demand, 0]);
-  console.log(expandedMatrix);
 
+  // Función auxiliar para ejecutar la Fase 2
+  const aplicarFase2 = (solucionInicial) => {
+    const fase2Resultado = algoritmoFase2 === 'modi' 
+      ? Modi(costMatrix, demand, supply, solucionInicial)
+      : steppingStone(costMatrix, demand, supply, solucionInicial);
+    return {
+      iteraciones: fase2Resultado.iteraciones,
+      asignaciones: combinarMatrices(expandedMatrix, fase2Resultado.asignaciones),
+    };
+  };
 
-  if (algoritmo === 'esquinaNoroeste') {
-    //const prueba = desbalanceadoFila(costMatrix, supply, demand);
-   // console.log(prueba);
+  // Variables de salida
+  let fase1 = {};
+  let matrizD = [];
+  let pasos = [];
+  let resultadoFase2 = {};
 
-    fase1 = esquinaNoroeste(supply, demand);
-    pasos = fase1.iteraciones;
-    combinar = combinarMatrices(expandedMatrix, fase1.solucion);
-    console.table(fase1.solucion);
+  // Ejecución de Fase 1
+  switch (algoritmo) {
+    case 'esquinaNoroeste':
+      fase1 = esquinaNoroeste(supply, demand);
+      pasos = fase1.iteraciones;
+      break;
+    
+    case 'matrizCostoMinimo':
+      fase1 = costoMinimo(costMatrix, supply, demand);
+      pasos = fase1.iteraciones;
+      matrizD = verificarDegradacion(costMatrix, fase1.solucion, supply, demand);
+      console.log('Matriz después de verificar degradación:', matrizD);
+      break;
+    
+    case 'metodoVogel':
+      fase1 = metodoVogel(costMatrix, supply, demand);
+      pasos = fase1.iteraciones;
+      break;
 
-
-    if (algoritmoFase2 === 'modi') {
-      //aqui el modi
-      metodoM = Modi(costMatrix, demand, supply, fase1.solucion);
-      pasos2 = metodoM.iteraciones;
-      console.log(metodoM.asignaciones);
-      console.log(metodoM.iteraciones);
-      combinar2 = combinarMatrices(expandedMatrix, metodoM.asignaciones);
-
-
-
-    } else {
-      stepp = steppingStone(costMatrix, demand, supply, fase1.solucion);
-      pasos2 = stepp.iteraciones;
-      console.log(stepp.asignaciones);
-      console.log(stepp.iteraciones);
-      combinar2 = combinarMatrices(expandedMatrix, stepp.asignaciones);
-
-    }
-  }
-  else if (algoritmo === 'matrizCostoMinimo') {
-    fase1 = costoMinimo(costMatrix, supply, demand);
-    pasos = fase1.iteraciones;
-    combinar = combinarMatrices(expandedMatrix, fase1.solucion);
-    if (algoritmoFase2 === 'modi') {
-
-
-      metodoM = Modi(costMatrix, demand, supply, fase1.solucion);
-      pasos2 = metodoM.iteraciones;
-      console.log(metodoM.asignaciones);
-      console.log(metodoM.iteraciones);
-      combinar2 = combinarMatrices(expandedMatrix, metodoM.asignaciones);
-
-
-    } else {
-      stepp = steppingStone(costMatrix, demand, supply, fase1.solucion);
-      pasos2 = stepp.iteraciones;
-      combinar2 = combinarMatrices(expandedMatrix, stepp.asignaciones);
-      console.log(pasos2);
-    }
-  }
-  else {
-    fase1 = metodoVogel(costMatrix, supply, demand);
-    pasos = fase1.iteraciones;
-    combinar = combinarMatrices(expandedMatrix, fase1.solucion);
-    console.log(fase1.solucion);
-    console.log(fase1.iteraciones);
-    if (algoritmoFase2 === 'modi') {
-      metodoM = Modi(costMatrix, demand, supply, fase1.solucion);
-      pasos2 = metodoM.iteraciones;
-      console.log(metodoM.asignaciones);
-      console.log(metodoM.iteraciones);
-      combinar2 = combinarMatrices(expandedMatrix, metodoM.asignaciones);
-    } else {
-      stepp = steppingStone(costMatrix, demand, supply, fase1.solucion);
-      pasos2 = stepp.iteraciones.asignaciones;
-      combinar2 = combinarMatrices(expandedMatrix, stepp.asignaciones);
-      console.log(stepp);
-    }
-
-
+    default:
+      console.error('Algoritmo no reconocido');
+      break;
   }
 
+  // Ejecuta Fase 2 si hay una solución inicial de Fase 1
+  const matrizFase1 = combinarMatrices(expandedMatrix, fase1.solucion);
+  resultadoFase2 = aplicarFase2(fase1.solucion);
 
-
-
-  console.log(combinar);
-
-  const numColumns = combinar[0].length; // Número de columnas en la matriz
-  const numRows = combinar.length;       // Número de filas en la matriz
-
-
+  // Renderizado final
   return (
     <div className="App">
-      <h1> {algoritmo} </h1>
+      <h1>{algoritmo}</h1>
 
+      {/* Iteraciones de Fase 1 */}
       <div>
         <h2>Iteraciones</h2>
         <ol>
@@ -123,144 +78,85 @@ function NextScreen() {
         </ol>
       </div>
 
+      {/* Matriz combinada de Fase 1 */}
       <div>
-        {combinar ? (
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th></th>
-                {Array.from({ length: numColumns - 1 }, (_, index) => (
-                  <th key={index} style={{ backgroundColor: '#007bff', color: '#fff' }}>
-                    W{index + 1}
-                  </th>
-                ))}
-                <th style={{ backgroundColor: '#007bff', color: '#fff' }}>Oferta</th>
-              </tr>
-            </thead>
-            <tbody>
-              {combinar.map((row, rowIndex) => (
-                <tr key={rowIndex} style={{ backgroundColor: rowIndex % 2 === 0 ? '#f8f9fa' : '#fff' }}>
-                  {/* Etiquetas de filas: F1, F2, ..., Demanda en la última fila */}
-                  <td style={{ fontWeight: 'bold' }}>
-                    {rowIndex === numRows - 1 ? 'Demanda' : `F${rowIndex + 1}`}
-                  </td>
-                  {/* Contenido de las celdas */}
-                  {row.map((cell, colIndex) => (
-                    <td key={colIndex}>{cell}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {matrizFase1 ? (
+          <TablaMatriz matriz={matrizFase1} titulo="Oferta y Demanda - Fase 1" />
         ) : (
           <p>No se ingresaron datos correctamente.</p>
         )}
       </div>
 
+      {/* Iteraciones y resultado de Fase 2 */}
       <div>
         <h1>{algoritmoFase2}</h1>
-
-        <div>
-
-          <h2>Resultado</h2>
-          <div>
-
-            <div>
-              {algoritmoFase2 === 'modi' && (
-                <div>
-                  {pasos2.map((iteracion, index) => (
-                    <div key={index}>
-                      <h3>Iteración {index + 1}</h3>
-
-                      <h4>Costos Reducidos:</h4>
-                      <table className="data-table">
-                        <thead>
-                          <tr>
-                            <th></th>
-                            {Array.from({ length: numColumns - 1 }, (_, index) => (
-                              <th key={index} style={{ backgroundColor: '#007bff', color: '#fff' }}>
-                                W{index + 1}
-                              </th>
-                            ))}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {iteracion.costosReducidos.map((fila, rowIndex) => (
-                            <tr
-                              key={rowIndex}
-                              style={{ backgroundColor: rowIndex % 2 === 0 ? '#f8f9fa' : '#fff' }}
-                            >
-                              <td style={{ fontWeight: 'bold' }}>
-                                {rowIndex === iteracion.costosReducidos.length - 1
-                                  ? 'Demanda'
-                                  : `F${rowIndex + 1}`}
-                              </td>
-                              {fila.map((cell, colIndex) => (
-                                <td key={colIndex}>{cell}</td>
-                              ))}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-
-                      <p><strong>Es Óptima:</strong> {iteracion.esOptima.toString()}</p>
-
-                      <p>
-                        <strong>Selección Stepping Stone:</strong> Columna: {iteracion.seleccionSteppingStone.columna}, Fila: {iteracion.seleccionSteppingStone.fila}
-                      </p>
-
-                      <p><strong>Valores U:</strong> {iteracion.u.join(', ')}</p>
-                      <p><strong>Valores V:</strong> {iteracion.v.join(', ')}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {combinar2 ? (
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th></th>
-                    {Array.from({ length: numColumns - 1 }, (_, index) => (
-                      <th key={index} style={{ backgroundColor: '#007bff', color: '#fff' }}>
-                        W{index + 1}
-                      </th>
-                    ))}
-                    <th style={{ backgroundColor: '#007bff', color: '#fff' }}>Oferta</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {combinar2.map((row, rowIndex) => (
-                    <tr key={rowIndex} style={{ backgroundColor: rowIndex % 2 === 0 ? '#f8f9fa' : '#fff' }}>
-                      {/* Etiquetas de filas: F1, F2, ..., Demanda en la última fila */}
-                      <td style={{ fontWeight: 'bold' }}>
-                        {rowIndex === numRows - 1 ? 'Demanda' : `F${rowIndex + 1}`}
-                      </td>
-                      {/* Contenido de las celdas */}
-                      {row.map((cell, colIndex) => (
-                        <td key={colIndex}>{cell}</td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p>No se ingresaron datos correctamente.</p>
-            )}
-          </div>
-
-        </div>
-
-
-
-
+        {algoritmoFase2 === 'modi' && (
+          <Fase2Modi iteraciones={resultadoFase2.iteraciones} />
+        )}
+        
+        {resultadoFase2.asignaciones ? (
+          <TablaMatriz matriz={resultadoFase2.asignaciones} titulo="Resultado Fase 2" />
+        ) : (
+          <p>No se ingresaron datos correctamente.</p>
+        )}
       </div>
     </div>
-
-
   );
-
 }
+
+// Componente para mostrar tablas de matrices
+const TablaMatriz = ({ matriz, titulo }) => {
+  const numColumns = matriz[0].length;
+  const numRows = matriz.length;
+
+  return (
+    <div>
+      <h2>{titulo}</h2>
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th></th>
+            {Array.from({ length: numColumns - 1 }, (_, index) => (
+              <th key={index} style={{ backgroundColor: '#007bff', color: '#fff' }}>
+                W{index + 1}
+              </th>
+            ))}
+            <th style={{ backgroundColor: '#007bff', color: '#fff' }}>Oferta</th>
+          </tr>
+        </thead>
+        <tbody>
+          {matriz.map((row, rowIndex) => (
+            <tr key={rowIndex} style={{ backgroundColor: rowIndex % 2 === 0 ? '#f8f9fa' : '#fff' }}>
+              <td style={{ fontWeight: 'bold' }}>
+                {rowIndex === numRows - 1 ? 'Demanda' : `F${rowIndex + 1}`}
+              </td>
+              {row.map((cell, colIndex) => (
+                <td key={colIndex}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+// Componente específico para mostrar iteraciones del algoritmo Modi
+const Fase2Modi = ({ iteraciones }) => (
+  <div>
+    <h2>Iteraciones Modi</h2>
+    {iteraciones.map((iteracion, index) => (
+      <div key={index}>
+        <h3>Iteración {index + 1}</h3>
+        <h4>Costos Reducidos:</h4>
+        <TablaMatriz matriz={iteracion.costosReducidos} />
+        <p><strong>Es Óptima:</strong> {iteracion.esOptima.toString()}</p>
+        <p><strong>Selección Stepping Stone:</strong> Columna: {iteracion.seleccionSteppingStone.columna}, Fila: {iteracion.seleccionSteppingStone.fila}</p>
+        <p><strong>Valores U:</strong> {iteracion.u.join(', ')}</p>
+        <p><strong>Valores V:</strong> {iteracion.v.join(', ')}</p>
+      </div>
+    ))}
+  </div>
+);
 
 export default NextScreen;

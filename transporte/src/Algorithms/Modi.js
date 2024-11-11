@@ -20,11 +20,14 @@ export function Modi(costos, demanda, oferta, fase1) {
             for (let i = 0; i < filas; i++) {
                 for (let j = 0; j < columnas; j++) {
                     if (asignaciones[i][j] > 0) { // Solo considerar celdas con asignaciones
+                        
                         if (u[i] !== null && v[j] === null) {
                             v[j] = costos[i][j] - u[i];
+                            console.log(`v ${v}`);
                             cambios = true;
                         } else if (u[i] === null && v[j] !== null) {
                             u[i] = costos[i][j] - v[j];
+                            console.log(`u ${u}`);
                             cambios = true;
                         }
                     }
@@ -42,7 +45,8 @@ export function Modi(costos, demanda, oferta, fase1) {
             for (let j = 0; j < columnas; j++) {
                 if (asignaciones[i][j] === 0) { // Solo evaluar celdas no asignadas
                     costosReducidos[i][j] = costos[i][j] - (u[i] + v[j]);
-                    if (costosReducidos[i][j] < 0) {
+                    console.log( `costos Reducidos ${costosReducidos}` );
+                    if (costosReducidos[i][j] <= 0) {
                         esOptima = false;
                         if (costosReducidos[i][j] < minReducido) {
                             minReducido = costosReducidos[i][j];
